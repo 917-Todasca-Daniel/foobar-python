@@ -1,0 +1,40 @@
+#   You need to pass a message to the bunny prisoners, but to avoid detection, the code you agreed to use is... obscure, to say the least. The bunnies are given food on standard-issue prison plates that are stamped with the numbers 0-9 for easier sorting, and you need to combine sets of plates to create the numbers in the code. The signal that a number is part of the code is that it is divisible by 3. You can do smaller numbers like 15 and 45 easily, but bigger numbers like 144 and 414 are a little trickier. Write a program to help yourself quickly create large numbers for use in the code, given a limited number of plates to work with.
+
+#   You have L, a list containing some digits (0 to 9). Write a function solution(L) which finds the largest number that can be made from some or all of these digits and is divisible by 3. If it is not possible to make such a number, return 0 as the solution. L will contain anywhere from 1 to 9 digits.  The same digit may appear multiple times in the list, but each element in the list may only be used once.
+
+def bestNumber(l):
+    if len(l) == 0:
+        return "0"
+    l.sort()
+    ans = ""
+    n = len(l)
+    for i in range(n):
+        ans += str(l[n-i-1])
+    return ans
+
+def solution(l):
+    v = sum(l)
+    cnt = [0 for i in range(10)]
+    for i in l:
+        cnt[i] += 1
+    if cnt[0] == len(l):
+        return 0
+    if v%3 == 0:
+        return bestNumber(l)
+        
+    for i in range(10):
+        if cnt[i] > 0 and i%3 == v%3:
+            l.remove(i)
+            return bestNumber(l)
+    
+    candidates = []
+    for i in range(10):
+        if 2*i%3 == v%3:
+            for j in range(min(2, cnt[i])):
+                candidates.append(i)
+                
+    if len(candidates) < 2:
+        return 0
+    l.remove(candidates[0])
+    l.remove(candidates[1])
+    return bestNumber(l)
